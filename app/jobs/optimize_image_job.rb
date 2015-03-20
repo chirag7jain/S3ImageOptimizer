@@ -13,7 +13,8 @@ class OptimizeImageJob < ActiveJob::Base
       begin
         s3_object = S3Client.get_object({:key => image.path, :bucket => BucketName})
         file = create_file(s3_object.body, image.path)
-        if (content_type = get_content_type(file)).match(/\/(jpg|jpeg)$/)
+        content_type = get_content_type(file)
+        if content_type.present? && content_type.match(/\/(jpg|jpeg)$/)
           if (s3_object.metadata["#{METATAG}"].nil? || s3_object.metadata["#{METATAG}"] != 'Y')
             optimize_upload(file, image, content_type)
           else
