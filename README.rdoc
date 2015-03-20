@@ -1,0 +1,63 @@
+== S3 Image Optimizer
+
+Helps you optimize images stored on S3 and invalidate cloudfront cache. Do read the tips section might just be helpful
+
+=== Requirements
+
+1. ruby 2.2.x
+
+=== Important Details
+
+1. App is hardcoded to only work with *JPEG* & *JPG*. It can be easily modified to work with other formats. You will need to refer to *image-optim*[github.com/toy/image_optim] gem to understand how.
+2. The *expires* header has been hardcoded to *10* *years*.
+3. It adds a *header* to the image to mark as optimized. Header name can be changed by setting environment variable *AWS_IMAGE_METATAG*
+
+==== Setup
+
+Initalize following environment variables
+
+1. AWS_REGION
+2. AWS_BUCKET
+3. AWS_CLOUDFRONT_DISTRIBUTION_ID
+4. AWS_SECRET_ACCESS_KEY
+5. AWS_ACCESS_KEY_ID
+6. AWS_IMAGE_ACL           # default - public-read       reference S3 Canned ACL[(docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl)]
+7. AWS_IMAGE_METATAG       # default - img_optim         reference S3 User-Defined Metadata[(docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html)]
+8. AWS_IMAGE_CACHE_CONTROL # default - max-age=315576000 reference Cache Control[(www.w3.org/Protocols/rfc2616/rfc2616-sec13.html)]
+9. IMAGE_OPT_DATABASE
+10. IMAGE_OPT_DATABASE_USERNAME
+11. IMAGE_OPT_DATABASE_PASSWORD
+12. IMAGE_OPT_DATABASE_HOST
+
+==== Installation
+
+1. bundle install
+2. add your Active Job queue adapter (options Sidekiq, Resque, Delayed Job etc)
+
+==== Start Optimizing
+
+1. Start rails c
+2. Add paths within your s3 bucket that you want to optimize
+3. Start your active job queue worker
+
+  DirPath.create(:path => 'myfolder/', :invalidate_cloudfront => true) # '/' Character is mandatory after folder name
+
+==== Database
+
+Current instance is built around postgres but can easily work with any other relational database (mysql, sqlite etc)
+
+mysql - mysql2 gem requires **lmysqlclient-dev** package
+
+postgres - pg gem requires **libpq-dev** package
+
+==== Issues / Contribution
+
+1. Feel free to fork the repo
+2. Want something changed, submit a pull request
+3. Problem with the app post an issue
+
+==== Tips
+
+1. Run it in a EC2 instance in the same region as your s3 instance - Will save cost and give quick responses.
+2. Prefer keeping the number of jobs equivalent to the number of processors in an EC2 instance. # Can't explain low level OS Stuff.
+3. Prefer using postgres. Optimizing in postgres is far simpler than mysql at least for me. FYI I am a noob when it comes to databases.
