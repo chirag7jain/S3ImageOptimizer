@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="S3imageoptimizer : Rails app for lossless compression of image on Amazon S3">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>S3imageoptimizer</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/chirag7jain/S3ImageOptimizer">View on GitHub</a>
+
+          <h1 id="project_title">S3imageoptimizer</h1>
+          <h2 id="project_tagline">Rails app for lossless compression of image on Amazon S3</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/chirag7jain/S3ImageOptimizer/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/chirag7jain/S3ImageOptimizer/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>== S3 Image Optimizer</p>
+
+<p>Helps you optimize images stored on S3 and invalidate cloudfront cache. Do read the tips section might just be helpful</p>
+
+<p>=== Requirements</p>
+
+<ol>
+<li>ruby 2.2.x</li>
+</ol>
+
+<p>=== Important Details</p>
+
+<ol>
+<li>App is hardcoded to only work with <em>JPEG</em> &amp; <em>JPG</em>. It can be easily modified to work with other formats. You will need to refer to <em>image-optim</em>[github.com/toy/image_optim] gem to understand how.</li>
+<li>The <em>expires</em> header has been hardcoded to <em>10</em> <em>years</em>.</li>
+<li>It adds a <em>header</em> to the image to mark as optimized. Header name can be changed by setting environment variable <em>AWS_IMAGE_METATAG</em>
+</li>
+</ol>
+
+<p>==== Setup</p>
+
+<p>Initalize following environment variables</p>
+
+<ol>
+<li>AWS_REGION</li>
+<li>AWS_BUCKET</li>
+<li>AWS_CLOUDFRONT_DISTRIBUTION_ID</li>
+<li>AWS_SECRET_ACCESS_KEY</li>
+<li>AWS_ACCESS_KEY_ID</li>
+<li>AWS_IMAGE_ACL           # default - public-read       reference S3 Canned ACL[(docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl)]</li>
+<li>AWS_IMAGE_METATAG       # default - img_optim         reference S3 User-Defined Metadata[(docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html)]</li>
+<li>AWS_IMAGE_CACHE_CONTROL # default - max-age=315576000 reference Cache Control[(<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</a>)]</li>
+<li>IMAGE_OPT_DATABASE</li>
+<li>IMAGE_OPT_DATABASE_USERNAME</li>
+<li>IMAGE_OPT_DATABASE_PASSWORD</li>
+<li>IMAGE_OPT_DATABASE_HOST</li>
+</ol>
+
+<p>==== Installation</p>
+
+<ol>
+<li>bundle install</li>
+<li>add your Active Job queue adapter (options Sidekiq, Resque, Delayed Job etc)</li>
+</ol>
+
+<p>==== Start Optimizing</p>
+
+<ol>
+<li>Start rails c</li>
+<li>Add paths within your s3 bucket that you want to optimize</li>
+<li>
+<p>Start your active job queue worker</p>
+
+<p>DirPath.create(:path =&gt; 'myfolder/', :invalidate_cloudfront =&gt; true) # '/' Character is mandatory after folder name</p>
+</li>
+</ol>
+
+<p>==== Database</p>
+
+<p>Current instance is built around postgres but can easily work with any other relational database (mysql, sqlite etc)</p>
+
+<p>mysql - mysql2 gem requires <strong>lmysqlclient-dev</strong> package</p>
+
+<p>postgres - pg gem requires <strong>libpq-dev</strong> package</p>
+
+<p>==== Issues / Contribution</p>
+
+<ol>
+<li>Feel free to fork the repo</li>
+<li>Want something changed, submit a pull request</li>
+<li>Problem with the app post an issue</li>
+</ol>
+
+<p>==== Tips</p>
+
+<ol>
+<li>Run it in a EC2 instance in the same region as your s3 instance - Will save cost and give quick responses.</li>
+<li>Prefer keeping the number of jobs equivalent to the number of processors in an EC2 instance. # Can't explain low level OS Stuff.</li>
+<li>Prefer using postgres. Optimizing in postgres is far simpler than mysql at least for me. FYI I am a noob when it comes to databases.</li>
+</ol>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">S3imageoptimizer maintained by <a href="https://github.com/chirag7jain">chirag7jain</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
